@@ -79,13 +79,16 @@ def train():
 
     # training process
     batch_iterator = None
+    # 数据集size 除以 batch_size，完成一个epoch需要的iteration次数
     epoch_size = len(dataset) // cfg.N
     print('Epoch size', epoch_size)
     for iteration in range(10000):
+            # batch_iterator为 None（第一次迭代） 或者 iteration为epoch_size整数倍（第n次迭代）
             if (not batch_iterator) or (iteration % epoch_size == 0):
                 # create batch iterator
                 batch_iterator = iter(data_loader)
 
+            # 迭代获取next iteration的数据
             voxel_features, voxel_coords, pos_equal_one, neg_equal_one, targets, images, calibs, ids = next(batch_iterator)
 
             # wrapper to variable
@@ -98,10 +101,15 @@ def train():
             optimizer.zero_grad()
 
             # forward
+            # voxel_features 
+            # voxel_coords 
             t0 = time.time()
             psm,rm = net(voxel_features, voxel_coords)
 
             # calculate loss
+            # pos_equal_one
+            # neg_equal_one
+            # targets
             conf_loss, reg_loss = criterion(rm, psm, pos_equal_one, neg_equal_one, targets)
             loss = conf_loss + reg_loss
 
